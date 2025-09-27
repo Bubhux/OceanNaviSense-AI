@@ -1,0 +1,12 @@
+# Exclure les fichiers et dossiers générés par Python lors de la compilation
+__pycache__/
+*.pyc
+
+# Exclure le dossier .vscode
+.vscode/
+
+# Exclure le dossier env (environnement virtuel Python)
+env/
+
+# Exclure les fichiers .env .coveragerc coverage et le dossier coverage_html_report
+.env
