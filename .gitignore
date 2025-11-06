@@ -10,3 +10,8 @@ env/
 
 # Exclure les fichiers .env .coveragerc coverage et le dossier coverage_html_report
 .env
+/data/map/tiles/
+/data/vector/geojson/
+/static/js/ol/
+/node_modules/
+/static/dist/
