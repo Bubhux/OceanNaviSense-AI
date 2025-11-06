@@ -1,0 +1,26 @@
+/* static/css/base.css */
+/* ===== STYLES GÉNÉRAUX ===== */
+body,
+html {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    width: 100%;
+    overflow: hidden;
+    font-family: Arial, sans-serif;
+}
+
+/* Variables CSS pour une meilleure maintenabilité */
+:root {
+    --primary-color: #3498db;
+    --secondary-color: #2c3e50;
+    --success-color: #4CAF50;
+    --warning-color: #FF9800;
+    --danger-color: #FF5722;
+    --font-size-small: 12px;
+    --font-size-medium: 14px;
+    --font-size-large: 16px;
+    --border-radius: 8px;
+    --box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    --transition: all 0.3s ease;
+}
