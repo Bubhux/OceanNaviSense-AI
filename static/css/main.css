@@ -1,0 +1,6 @@
+/* static/css/main.css */
+/* Fichier principal CSS - Importe tous les autres fichiers */
+@import url('base.css');
+@import url('layout.css');
+@import url('components.css');
+@import url('map-controls.css');

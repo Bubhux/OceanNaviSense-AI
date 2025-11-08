@@ -1,0 +1,28 @@
+/* static/css/components.css */
+/* ===== COMPOSANTS RÉUTILISABLES ===== */
+
+/* Styles pour les cards superposées */
+.bk-card {
+    box-shadow: var(--box-shadow);
+    border-radius: var(--border-radius);
+    backdrop-filter: blur(5px);
+    transition: var(--transition);
+}
+
+/* Styles de base pour tous les boutons */
+button {
+    margin: 2px;
+    padding: 8px 12px;
+    cursor: pointer;
+    border: 1px solid #ccc;
+    border-radius: var(--border-radius);
+    background: rgba(255, 255, 255, 0.6);
+    font-size: var(--font-size-small);
+    transition: all 0.2s;
+    box-shadow: var(--box-shadow);
+}
+
+button:hover {
+    background: #f0f0f0;
+    transform: translateY(-1px);
+}
