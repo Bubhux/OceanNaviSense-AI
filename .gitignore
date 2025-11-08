@@ -15,3 +15,4 @@ env/
 /static/js/ol/
 /node_modules/
 /static/dist/
+/static/css/ol.css
