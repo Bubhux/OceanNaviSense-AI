@@ -6,6 +6,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Natural Earth 1:10m - Full Page</title>
+    <link rel="stylesheet" href="http://localhost:8000/static/css/ol.css">
+    <link rel="stylesheet" href="http://localhost:8000/static/css/main.css">
 </head>
 
 <body>
@@ -29,6 +31,17 @@
         <div class="lat-lon">Lat: 0.00°N, Lon: 0.00°E</div>
         <div class="projected">X: 0, Y: 0</div>
     </div>
+
+    <script type="module" src="http://localhost:8000/static/dist/main.js"></script>
+    <script>
+        // Fonction pour récupérer les paramètres d'URL
+        function getUrlParams() {
+            const params = new URLSearchParams(window.location.search);
+            return {
+                projection: params.get('projection') || 'EPSG3857'
+            };
+        }
+    </script>
 </body>
 
 </html>
