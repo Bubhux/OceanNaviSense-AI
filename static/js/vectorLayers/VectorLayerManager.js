@@ -18,6 +18,29 @@ class VectorLayerManager extends BaseVectorLayer {
         console.log('🗺️ Initialisation du VectorLayerManager');
         this.init();
     }
+
+    // === INITIALISATION ===
+    async init() {
+        try {
+            await this.initializeLayers();
+            await this.loadAllData();
+            this.isReady = true;
+            console.log('✅ VectorLayerManager prêt');
+
+            if (window.onVectorLayersReady) {
+                window.onVectorLayersReady();
+            }
+        } catch (error) {
+            console.error('❌ Erreur initialisation VectorLayerManager:', error);
+        }
+    }
+
+    initializeLayers() {
+        // Initialiser toutes les couches enfants
+        this.layers.set('geography_regions', new GeographyRegionsLayer(this.map));
+
+        console.log(`📋 ${this.layers.size} couches vectorielles initialisées`);
+    }
 }
 
 // Exposer globalement
