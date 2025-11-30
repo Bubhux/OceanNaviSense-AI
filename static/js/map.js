@@ -201,6 +201,72 @@ export class MapManager {
         return this.map;
     }
 
+    // Vérifier si le centre est valide pour la projection
+    isValidCenter(center, config) {
+        if (!center || center.length !== 2) return false;
+
+        const [x, y] = center;
+        const [minX, minY, maxX, maxY] = config.extent;
+
+        return x >= minX && x <= maxX && y >= minY && y <= maxY;
+    }
+
+    // Vue par défaut (utilisée temporairement avant showWholeWorld)
+    getDefaultView() {
+        if (this.currentProjection === 'EPSG3857') {
+            return {
+                center: ol.proj.fromLonLat([0, 0]),
+                zoom: 1
+            };
+        } else {
+            return {
+                center: [0, 0],
+                zoom: 1
+            };
+        }
+    }
+
+    // === CONFIGURATION DES ÉVÉNEMENTS ===
+    setupEventListeners() {
+        const view = this.map.getView();
+
+        // CORRECTION : Mettre à jour le panneau d'info ET sauvegarder
+        const updateAndSave = () => {
+            this.updateZoomInfo();
+            this.saveViewState();
+        };
+
+        // Événements principaux - mettre à jour le panneau ET sauvegarder
+        view.on('change:resolution', updateAndSave);
+        view.on('change:center', updateAndSave);
+        view.on('change:rotation', updateAndSave);
+
+        // Événements de fin d'interaction
+        this.map.on('moveend', updateAndSave);
+
+        // Redimensionnement
+        window.addEventListener('resize', () => {
+            setTimeout(() => {
+                if (this.map) {
+                    this.map.updateSize();
+                    const currentZoom = this.map.getView().getZoom();
+                    if (this.zoomController) {
+                        this.zoomController.updateZoomControl(currentZoom);
+                    }
+                    if (this.scaleBar) {
+                        this.scaleBar.updateScaleBar();
+                    }
+                    updateAndSave(); // Mettre à jour le panneau ET sauvegarder
+                }
+            }, 100);
+        });
+
+        // Événement de chargement complet de la carte
+        this.map.on('loadend', () => {
+            this.updateZoomInfo();
+        });
+    }
+
     initControls() {
         this.zoomController = new ZoomController(this.map);
 
