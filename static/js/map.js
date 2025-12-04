@@ -201,6 +201,47 @@ export class MapManager {
         return this.map;
     }
 
+    calculateInitialView(config) {
+        let initialCenter, initialZoom;
+
+        // Si ce n'est pas la première visite ET qu'un état valide existe
+        if (!this.isFirstVisit && this.viewState.center && this.viewState.zoom !== null &&
+            this.isValidCenter(this.viewState.center, config)) {
+
+            if (this.viewState.projection === config.code) {
+                initialCenter = this.viewState.center;
+                initialZoom = this.viewState.zoom;
+                console.log('🎯 Utilisation état sauvegardé:', { center: initialCenter, zoom: initialZoom });
+            } else {
+                console.log('🔄 Conversion nécessaire entre projections');
+                if (this.viewState.projection === 'EPSG:4326' && config.code === 'EPSG:3857') {
+                    initialCenter = ol.proj.fromLonLat(this.viewState.center);
+                    initialZoom = this.viewState.zoom;
+                } else if (this.viewState.projection === 'EPSG:3857' && config.code === 'EPSG:4326') {
+                    initialCenter = ol.proj.toLonLat(this.viewState.center);
+                    initialZoom = this.viewState.zoom;
+                } else {
+                    // Fallback vers vue par défaut
+                    const defaultView = this.getDefaultView();
+                    initialCenter = defaultView.center;
+                    initialZoom = defaultView.zoom;
+                }
+                console.log('🎯 Utilisation état converti:', { center: initialCenter, zoom: initialZoom });
+            }
+        } else {
+            // Utiliser la vue par défaut (sera remplacé par showWholeWorld si première visite)
+            const defaultView = this.getDefaultView();
+            initialCenter = defaultView.center;
+            initialZoom = defaultView.zoom;
+            console.log('🎯 Utilisation position par défaut:', {
+                center: initialCenter,
+                zoom: initialZoom
+            });
+        }
+
+        return { initialCenter, initialZoom };
+    }
+
     // Vérifier si le centre est valide pour la projection
     isValidCenter(center, config) {
         if (!center || center.length !== 2) return false;
