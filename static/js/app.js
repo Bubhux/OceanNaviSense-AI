@@ -96,26 +96,12 @@ function loadVectorLayersFromURL() {
 
     const urlParams = new URLSearchParams(window.location.search);
     const vectorLayers = urlParams.get('vector_layers');
-    const regionTypes = urlParams.get('region_types');
-    const marineProps = urlParams.get('marine_props');
-    const graticuleProps = urlParams.get('graticule_props');
-    const graticuleDensity = urlParams.get('graticule_density') || 'auto';
-    const labelTypes = urlParams.get('label_types');
 
     if (vectorLayers && customWindow.vectorLayerManager) {
         const layersArray = vectorLayers.split(',').filter(l => l);
-        const regionTypesArray = regionTypes ? regionTypes.split(',').filter(t => t) : [];
-        const marinePropsArray = marineProps ? marineProps.split(',').filter(m => m) : [];
-        const graticulePropsArray = graticuleProps ? graticuleProps.split(',').filter(g => g) : [];
-        const labelTypesArray = labelTypes ? labelTypes.split(',').filter(l => l) : [];
 
         console.log('📥 Chargement couches depuis URL:', {
             layers: layersArray,
-            regionTypes: regionTypesArray,
-            marineProps: marinePropsArray,
-            graticuleProps: graticulePropsArray,
-            graticuleDensity: graticuleDensity,
-            labelTypes: labelTypesArray
         });
 
         customWindow.urlLayersLoaded = true;
@@ -125,11 +111,6 @@ function loadVectorLayersFromURL() {
                 console.log('✅ Gestionnaire vectoriel prêt, mise à jour des couches');
                 customWindow.vectorLayerManager.updateVectorLayers(
                     layersArray,           // layers
-                    regionTypesArray,      // regionTypes
-                    marinePropsArray,      // marineProperties  
-                    graticulePropsArray,   // graticuleProperties
-                    graticuleDensity,      // graticuleDensity
-                    labelTypesArray        // labelTypes
                 );
                 vectorLayerManager = customWindow.vectorLayerManager;
             } else if (customWindow.vectorLayerManager) {
