@@ -81,6 +81,47 @@ class BaseVectorLayer {
             return false;
         }
     }
+
+    removeFromMap() {
+        let removed = false;
+
+        try {
+            const layers = this.map.getLayers().getArray();
+
+            // NOUVEAU: Forcer la mise à jour avant suppression
+            this.map.updateSize();
+
+            // Retirer la couche polygon si elle existe
+            if (this.polygonLayer && layers.includes(this.polygonLayer)) {
+                this.map.removeLayer(this.polygonLayer);
+                console.log(`✅ Couche polygon ${this.layerName} retirée de la carte`);
+                removed = true;
+            }
+
+            // Retirer la couche de labels si elle existe
+            if (this.labelLayer && layers.includes(this.labelLayer)) {
+                this.map.removeLayer(this.labelLayer);
+                console.log(`✅ Labels ${this.layerName} retirés de la carte`);
+                removed = true;
+            }
+
+            if (!removed) {
+                console.log(`ℹ️ Couche ${this.layerName} n'était pas sur la carte`);
+            }
+
+            this.isLayerOnMap = false;
+
+            // NOUVEAU: Forcer le rendu après suppression
+            setTimeout(() => {
+                this.map.renderSync();
+            }, 50);
+
+            return true;
+        } catch (error) {
+            console.error(`❌ Erreur retrait couche ${this.layerName}:`, error);
+            return false;
+        }
+    }
 }
 
 if (typeof window !== 'undefined') {
