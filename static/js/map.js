@@ -414,6 +414,27 @@ export class MapManager {
         return projections[this.currentProjection];
     }
 
+    // === VUES ET NAVIGATION ===
+    showWholeWorld() {
+        const view = this.map.getView();
+        const projection = view.getProjection().getCode();
+
+        console.log('🌍 Affichage monde entier');
+
+        if (projection === 'EPSG:3857') {
+            view.setCenter(ol.proj.fromLonLat([0, 23.5]));
+        } else {
+            view.setCenter([0, 23.5]);
+        }
+        view.setZoom(2); // Zoom pour voir le monde entier
+
+        // Mettre à jour le panneau ET sauvegarder
+        setTimeout(() => {
+            this.updateZoomInfo();
+            this.saveViewState();
+        }, 100);
+    }
+
     getTileUrl(tileCoord) {
         const z = tileCoord[0];
         const x = tileCoord[1];
