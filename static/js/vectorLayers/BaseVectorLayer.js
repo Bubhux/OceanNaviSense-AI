@@ -122,6 +122,39 @@ class BaseVectorLayer {
             return false;
         }
     }
+
+    /**
+     * Méthodes utilitaires communes
+     */
+    getPolygonCentroid(polygon) {
+        try {
+            const coordinates = polygon.getLinearRing(0).getCoordinates();
+            let signedArea = 0;
+            let centroidX = 0;
+            let centroidY = 0;
+
+            for (let i = 0; i < coordinates.length - 1; i++) {
+                const x0 = coordinates[i][0];
+                const y0 = coordinates[i][1];
+                const x1 = coordinates[i + 1][0];
+                const y1 = coordinates[i + 1][1];
+
+                const a = x0 * y1 - x1 * y0;
+                signedArea += a;
+                centroidX += (x0 + x1) * a;
+                centroidY += (y0 + y1) * a;
+            }
+
+            signedArea *= 0.5;
+            centroidX /= (6 * signedArea);
+            centroidY /= (6 * signedArea);
+
+            return new ol.geom.Point([centroidX, centroidY]);
+        } catch (error) {
+            const extent = polygon.getExtent();
+            return new ol.geom.Point(ol.extent.getCenter(extent));
+        }
+    }
 }
 
 if (typeof window !== 'undefined') {
