@@ -155,6 +155,16 @@ class BaseVectorLayer {
             return new ol.geom.Point(ol.extent.getCenter(extent));
         }
     }
+
+    getMultiPolygonCentroid(multiPolygon) {
+        try {
+            const polygon = multiPolygon.getPolygon(0);
+            return this.getPolygonCentroid(polygon);
+        } catch (error) {
+            const extent = multiPolygon.getExtent();
+            return new ol.geom.Point(ol.extent.getCenter(extent));
+        }
+    }
 }
 
 if (typeof window !== 'undefined') {
