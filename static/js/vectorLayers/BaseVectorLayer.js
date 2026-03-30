@@ -165,6 +165,50 @@ class BaseVectorLayer {
             return new ol.geom.Point(ol.extent.getCenter(extent));
         }
     }
+
+    isVisible() {
+        return this.isLayerOnMap && (this.polygonLayer !== null || this.labelLayer !== null);
+    }
+
+    /**
+     * Nettoyage complet
+     */
+    cleanup() {
+        this.removeFromMap();
+        this.polygonLayer = null;
+        this.labelLayer = null;
+        this.isLayerOnMap = false;
+        this.currentProperties.clear();
+    }
+
+    // Méthodes abstraites
+    async loadData() {
+        throw new Error('Méthode loadData() non implémentée');
+    }
+
+    createLayer(properties = new Set()) {
+        throw new Error('Méthode createLayer() non implémentée');
+    }
+
+    createPolygonStyle(feature, resolution) {
+        throw new Error('Méthode createPolygonStyle() non implémentée');
+    }
+
+    createLabelStyle(feature, resolution) {
+        throw new Error('Méthode createLabelStyle() non implémentée');
+    }
+
+    classifyFeatureImportance(feature) {
+        throw new Error('Méthode classifyFeatureImportance() non implémentée');
+    }
+
+    /**
+     * Mise à jour de la couche avec nouvelles propriétés
+     */
+    updateLayer(properties = new Set(), density = 'auto') {
+        this.removeFromMap();
+        this.createLayer(properties, density);
+    }
 }
 
 if (typeof window !== 'undefined') {
