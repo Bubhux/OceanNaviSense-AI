@@ -7,13 +7,6 @@ class VectorLayerManager extends BaseVectorLayer {
     constructor(map) {
         super(map, 'vector_manager');
         this.layers = new Map();
-        this.currentLayers = new Set();
-        this.regionTypes = new Set();
-        this.marineProperties = new Set();
-        this.graticuleProperties = new Set();
-        this.labelTypes = new Set();
-        this.graticuleDensity = 'auto';
-        this.isReady = false;
 
         console.log('🗺️ Initialisation du VectorLayerManager');
         this.init();
@@ -71,11 +64,6 @@ class VectorLayerManager extends BaseVectorLayer {
             setTimeout(() => {
                 this.updateVectorLayers(
                     layersArray,
-                    regionTypesArray,
-                    marineArray,
-                    graticuleArray,
-                    this.graticuleDensity,
-                    labelTypesArray
                 );
                 console.log('✅ Couches vectorielles rafraîchies pour nouvelle projection');
             }, 100);
@@ -83,7 +71,7 @@ class VectorLayerManager extends BaseVectorLayer {
     }
 
     // === GESTION DES COUCHES ===
-    updateVectorLayers(layers, regionTypes) {
+    updateVectorLayers(layers) {
         const currentProj = this.map.getView().getProjection().getCode();
         console.log(`🔄 VectorLayerManager: Mise à jour en projection ${currentProj}`);
         console.log('📋 Paramètres reçus:', {
@@ -100,9 +88,6 @@ class VectorLayerManager extends BaseVectorLayer {
         }
 
         const newLayers = new Set(layers || []);
-        const newRegionTypes = new Set(regionTypes || []);
-        const newMarineProperties = new Set(marineProperties || []);
-        const newGraticuleProperties = new Set(graticuleProperties || []);
 
         console.log('🎯 Couches à afficher:', Array.from(newLayers));
 
@@ -110,7 +95,7 @@ class VectorLayerManager extends BaseVectorLayer {
 
         // Ajouter les nouvelles couches
         for (const layerName of newLayers) {
-            this.addVectorLayer(layerName, newRegionTypes, newMarineProperties, newGraticuleProperties);
+            this.addVectorLayer(layerName);
         }
 
         this.currentLayers = newLayers;
@@ -119,6 +104,114 @@ class VectorLayerManager extends BaseVectorLayer {
         console.log('📊 État final:', {
             currentLayers: Array.from(this.currentLayers),
         });
+    }
+
+    addVectorLayer(layerName, regionTypes, marineProperties, graticuleProperties) {
+        console.log(`➕ VectorLayerManager: Ajout couche vectorielle: ${layerName}`);
+
+        const layer = this.layers.get(layerName);
+        if (!layer) {
+            console.error(`❌ Couche ${layerName} non trouvée dans:`, Array.from(this.layers.keys()));
+            return;
+        }
+
+        console.log(`🔍 Couche ${layerName} trouvée, données chargées:`, !!layer.rawGeoJSON);
+
+        // CRÉER LA COUCHE AVEC LES PROPRIÉTÉS SPÉCIFIQUES
+        switch (layerName) {
+            case 'geography_regions':
+                console.log(`🎯 Création geography_regions avec types:`, regionTypes);
+                layer.createLayer(regionTypes);
+                break;
+            default:
+                console.warn(`⚠️ Couche ${layerName} non gérée dans le switch`);
+        }
+
+        layer.addToMap();
+        console.log(`✅ Couche ${layerName} ajoutée à la carte`);
+    }
+
+    removeVectorLayer(layerName) {
+        console.log(`➖ VectorLayerManager: Suppression couche vectorielle: ${layerName}`);
+
+        const layer = this.layers.get(layerName);
+        if (layer) {
+            layer.removeFromMap();
+            console.log(`✅ Couche ${layerName} supprimée`);
+        }
+    }
+
+    removeAllLayers() {
+        console.log('🗑️ Suppression de toutes les couches vectorielles');
+        for (const [layerName, layer] of this.layers) {
+            layer.removeFromMap();
+        }
+    }
+
+    // === MÉTHODES DE GESTION (SURNOMMES) ===
+    activateManager() {
+        console.log('🎛️ VectorLayerManager activé');
+        // Le manager est toujours "actif", il gère juste les sous-couches
+    }
+
+    deactivateManager() {
+        console.log('🔴 VectorLayerManager désactivé - suppression de toutes les couches');
+        for (const layerName of this.currentLayers) {
+            this.removeVectorLayer(layerName);
+        }
+        this.currentLayers.clear();
+    }
+
+    isManagerActive() {
+        return this.currentLayers.size > 0;
+    }
+
+    // === MÉTHODES UTILITAIRES ===
+    getLayer(layerName) {
+        return this.layers.get(layerName);
+    }
+
+    isLayerVisible(layerName) {
+        const layer = this.layers.get(layerName);
+        return layer ? layer.isVisible() : false;
+    }
+
+    setLayerVisibility(layerName, visible) {
+        if (visible) {
+            this.currentLayers.add(layerName);
+        } else {
+            this.currentLayers.delete(layerName);
+        }
+    }
+
+    getStatus() {
+        return {
+            isReady: this.isReady,
+            activeLayers: Array.from(this.currentLayers),
+        };
+    }
+
+    // === MÉTHODES HÉRITÉES (IMPLÉMENTATIONS VIDES) ===
+    async loadData() {
+        console.log('📥 VectorLayerManager: Chargement des données des sous-couches...');
+        await this.loadAllData();
+        return true;
+    }
+
+    createLayer(properties = new Set()) {
+        console.log('🏗️ VectorLayerManager: Gestion des sous-couches activée');
+    }
+
+    createPolygonStyle(feature, resolution) {
+        return null;
+    }
+
+    createLabelStyle(feature, resolution) {
+        return null;
+    }
+
+    classifyFeatureImportance(feature) {
+        return 'medium';
     }
 }
 
