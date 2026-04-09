@@ -1,0 +1,26 @@
+{
+  "name": "copernicus_wmts_viewer",
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "serve": "vite preview --port 4173",
+    "python-backend": "python main.py",
+    "dev:full": "concurrently \"npm run dev\" \"npm run python-backend\""
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "devDependencies": {
+    "@vitejs/plugin-legacy": "^7.2.1",
+    "concurrently": "^9.2.1",
+    "vite": "^7.1.12"
+  },
+  "dependencies": {
+    "ol": "^10.6.1"
+  }
+}
